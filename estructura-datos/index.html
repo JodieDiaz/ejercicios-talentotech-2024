@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        #task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .task {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            cursor: pointer;
+        }
+        .task em {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Tareas</h1>
+    <input type="text" id="task-input" placeholder="Nueva tarea">
+    <input type="date" id="max_date" placeholder="Fecha">
+    <button onclick="addTask()">Agregar Tarea</button>
+
+    <ul id="task-list"></ul>
+
+    <script src="task-list.js"></script>
+
+</body>
+</html>
