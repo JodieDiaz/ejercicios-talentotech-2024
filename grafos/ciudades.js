@@ -85,27 +85,39 @@ document.addEventListener("DOMContentLoaded", function () {
         {
           selector: "node",
           style: {
-            "background-color": "#666",
-            label: "data(label)",
-            "text-valign": "center",
-            "text-halign": "center",
+            "background-color": "#1f77b4", // Color de fondo de los nodos
+            "border-color": "#ffffff", // Color del borde de los nodos
+            "border-width": 2, // Ancho del borde de los nodos
+            width: "70px", // Ancho de los nodos
+            height: "70px", // Alto de los nodos
+            label: "data(label)", // Etiqueta del nodo
+            "text-valign": "center", // Alineación vertical del texto
+            "text-halign": "center", // Alineación horizontal del texto
+            color: "#ffffff", // Color del texto
+            "font-size": "14px",
+            "font-weight": "bold",
+            "text-wrap": "wrap", // Ajustar el texto en el nodo
+            "text-max-width": "50px", // Máximo ancho del texto para evitar desbordamiento
           },
         },
         {
           selector: "edge",
           style: {
             width: 2,
-            "line-color": "#ccc",
-            "target-arrow-color": "#ccc",
-            "target-arrow-shape": "triangle",
-            label: "data(label)",
-            "text-rotation": "autorotate",
+            "line-color": "#b9b0aa", // Color de la línea
+            "target-arrow-color": "#888", // Color de la flecha
+            "target-arrow-shape": "triangle", // Forma de la flecha
+            label: "data(label)", // Etiqueta del borde
+            "font-size": "12px", // Tamaño de la fuente
+            "font-weight": "bold",
+            color: "#333", // Color del texto
+            "text-rotation": "autorotate", // Rotación automática del texto
           },
         },
       ],
       layout: {
-        name: "grid",
-        rows: 3,
+        name: "circle", // Diseño en círculo para distribuir los nodos
+        padding: 10,
       },
     });
   }
