@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const formulario = document.getElementById("formulario");
   const resultadoDiv = document.getElementById("resultado");
+  const rutaCortaDiv = document.getElementById("ruta-corta");
   const grafoDiv = document.getElementById("grafo");
 
   // Distancias en kilómetros entre las ciudades
@@ -14,12 +15,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Consumo promedio de combustible por tipo de vehículo (litros/100 km)
   const consumoVehiculos = {
-    moto: 3, // Ejemplo de consumo para una moto
-    carro: 8, // Ejemplo de consumo para un carro
-    "carro-antiguo": 12, // Ejemplo de consumo para un carro antiguo
-    "carro-hibrido": 5, // Ejemplo de consumo para un carro híbrido
-    camion: 20, // Ejemplo de consumo para un camión
-    bus: 25, // Ejemplo de consumo para un bus
+    moto: 3,
+    carro: 8,
+    "carro-antiguo": 12,
+    "carro-hibrido": 5,
+    camion: 20,
+    bus: 25,
   };
 
   formulario.addEventListener("submit", function (event) {
@@ -49,17 +50,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Mostrar el resultado
     resultadoDiv.innerHTML = `
-            <p>Distancia de ${
-              origen.charAt(0).toUpperCase() + origen.slice(1)
-            } a ${
-      destino.charAt(0).toUpperCase() + destino.slice(1)
-    }: ${distancia} km</p>
-            <p>Costo del recorrido: ${costoFormateado}</p>
-        `;
+      <p>Distancia de ${origen.charAt(0).toUpperCase() + origen.slice(1)} a ${destino.charAt(0).toUpperCase() + destino.slice(1)}: ${distancia} km</p>
+      <p>Costo del recorrido: ${costoFormateado}</p>
+    `;
+
+    // Calcular la ruta más corta y mostrarla
+    const rutaCorta = dijkstra(distancias, origen, destino);
+    rutaCortaDiv.innerHTML = `
+      <p>Distancia más corta desde ${origen.charAt(0).toUpperCase() + origen.slice(1)} a ${destino.charAt(0).toUpperCase() + destino.slice(1)}: ${rutaCorta.distancia} km</p>
+      <p>Ruta: ${rutaCorta.camino.join(' -> ')}</p>
+    `;
 
     // Mostrar el gráfico
     mostrarGrafo();
   });
+
+  function dijkstra(grafo, inicio, destino) {
+    const distancias = {}; // Distancia mínima desde el nodo de inicio
+    const previos = {}; // Nodo previo en el camino más corto
+    const nodosNoVisitados = new Set(Object.keys(grafo)); // Nodos que aún no han sido visitados
+
+    // Inicializar distancias con infinito y nodo de inicio con distancia 0
+    Object.keys(grafo).forEach(nodo => {
+      distancias[nodo] = Infinity;
+      previos[nodo] = null;
+    });
+    distancias[inicio] = 0;
+
+    while (nodosNoVisitados.size > 0) {
+      // Seleccionar el nodo con la distancia más corta
+      const nodoActual = Array.from(nodosNoVisitados).reduce((minNodo, nodo) => {
+        return distancias[nodo] < distancias[minNodo] ? nodo : minNodo;
+      });
+
+      // Si el nodo actual es el destino, se ha encontrado el camino más corto
+      if (nodoActual === destino) break;
+
+      // Eliminar el nodo actual del conjunto de nodos no visitados
+      nodosNoVisitados.delete(nodoActual);
+
+      // Actualizar distancias a los vecinos
+      Object.keys(grafo[nodoActual]).forEach(vecino => {
+        if (nodosNoVisitados.has(vecino)) {
+          const nuevaDistancia = distancias[nodoActual] + grafo[nodoActual][vecino];
+          if (nuevaDistancia < distancias[vecino]) {
+            distancias[vecino] = nuevaDistancia;
+            previos[vecino] = nodoActual;
+          }
+        }
+      });
+    }
+
+    // Reconstruir el camino más corto
+    const camino = [];
+    let paso = destino;
+    while (previos[paso]) {
+      camino.unshift(paso);
+      paso = previos[paso];
+    }
+    if (camino.length > 0) {
+      camino.unshift(inicio);
+    }
+
+    return { distancia: distancias[destino], camino };
+  }
 
   function mostrarGrafo() {
     const cy = cytoscape({
@@ -115,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         },
       ],
+     
       layout: {
         name: "circle", // Diseño en círculo para distribuir los nodos
         padding: 10,
